@@ -1,0 +1,400 @@
+{
+  "kind": "studio.agent-config-draft",
+  "exportedAt": "2026-09-28T10:00:00.000Z",
+  "exportedFrom": {
+    "agentId": "agt_PaperDraftAgentDraft",
+    "agentName": "Paper Draft Agent",
+    "configId": "cfg_PaperDraftDraft01",
+    "configVer": 1
+  },
+  "agentConfig": {
+    "agent_name": "Paper Draft Agent",
+    "pipelineType": "classify-extract",
+    "documentParseConfiguration": {
+      "modelName": "document-parse",
+      "mode": "standard",
+      "ocrMode": "force",
+      "lang": "",
+      "outputFormats": [
+        "html",
+        "text"
+      ],
+      "chartRecognition": false,
+      "coordinates": true,
+      "base64Encoding": [
+        "figure"
+      ],
+      "mergeMultipageTables": false
+    },
+    "documentClassifyConfiguration": {
+      "schema": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "document-classify",
+          "schema": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "Strongly Supported",
+                "description": "설계 가설 및 기여점이 실증 데이터로 완벽하고 강력히 입증된 경우"
+              },
+              {
+                "const": "Partially Supported",
+                "description": "핵심 가설은 입증되었으나 일부 벤치마크나 제약 사항의 추가 검증이 필요한 경우"
+              },
+              {
+                "const": "Weakly Supported",
+                "description": "실증 근거가 부족하거나 제안 목표 대비 성능/기능 미달인 경우"
+              }
+            ]
+          }
+        }
+      },
+      "modelName": ""
+    },
+    "informationExtractConfiguration": {
+      "modelName": "",
+      "schemas": [
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract_StronglySupported",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "support_level": {
+                  "type": "string",
+                  "description": "입증 수준 판정 (Strongly Supported / Partially Supported / Weakly Supported)"
+                },
+                "coherence_score": {
+                  "type": "number",
+                  "description": "설계-실증 간 종합 정합성 점수 (0~100)"
+                },
+                "abstract": {
+                  "type": "string",
+                  "description": "연구 목적, 제안 방법론 및 실증 성과를 요약한 학술 논문 초록"
+                },
+                "methodology_draft": {
+                  "type": "string",
+                  "description": "학술 논문 4장 형태의 정형 연구 방법론 및 시스템 아키텍처 본문 초안 서술문"
+                },
+                "validation_draft": {
+                  "type": "string",
+                  "description": "학술 논문 5장 형태의 실증 검증 결과 분석 및 비교 고찰 본문 초안 서술문"
+                },
+                "supported_contributions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "실증 근거에 의해 충분히 뒷받침된 핵심 기여점"
+                  },
+                  "description": "입증된 기여점 목록"
+                },
+                "recommended_followups": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "제약 사항 및 한계를 보완하기 위해 권장되는 후속 연구/검증 과제"
+                  },
+                  "description": "추천 후속 검증 과제 목록"
+                },
+                "introduction_draft": {
+                  "type": "string",
+                  "description": "학술 논문 1장 형태의 서론 및 연구 문제 정의 본문 초안"
+                },
+                "related_work_draft": {
+                  "type": "string",
+                  "description": "학술 논문 2장 형태의 관련 연구 및 배경 지식 본문 초안"
+                },
+                "system_design_draft": {
+                  "type": "string",
+                  "description": "학술 논문 3장 형태의 시스템 아키텍처 및 이론 모델 본문 초안"
+                },
+                "limitations_draft": {
+                  "type": "string",
+                  "description": "학술 논문 6장 형태의 연구의 한계점 및 식별된 기술적 제약 사항 본문 초안"
+                },
+                "conclusion_draft": {
+                  "type": "string",
+                  "description": "학술 논문 7장 형태의 결론 및 향후 연구 과제 본문 초안"
+                },
+                "limitations_list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "식별된 기술적 병목 및 제약 사항"
+                  },
+                  "description": "식별된 제약사항 목록"
+                }
+              },
+              "required": [
+                "support_level",
+                "coherence_score",
+                "abstract",
+                "introduction_draft",
+                "related_work_draft",
+                "system_design_draft",
+                "methodology_draft",
+                "validation_draft",
+                "limitations_draft",
+                "conclusion_draft",
+                "supported_contributions",
+                "limitations_list",
+                "recommended_followups"
+              ]
+            }
+          },
+          "mode": "standard",
+          "modelName": "",
+          "nodeMode": "extract"
+        },
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract_PartiallySupported",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "support_level": {
+                  "type": "string",
+                  "description": "입증 수준 판정 (Strongly Supported / Partially Supported / Weakly Supported)"
+                },
+                "coherence_score": {
+                  "type": "number",
+                  "description": "설계-실증 간 종합 정합성 점수 (0~100)"
+                },
+                "abstract": {
+                  "type": "string",
+                  "description": "연구 목적, 제안 방법론 및 실증 성과를 요약한 학술 논문 초록"
+                },
+                "methodology_draft": {
+                  "type": "string",
+                  "description": "학술 논문 4장 형태의 정형 연구 방법론 및 시스템 아키텍처 본문 초안 서술문"
+                },
+                "validation_draft": {
+                  "type": "string",
+                  "description": "학술 논문 5장 형태의 실증 검증 결과 분석 및 비교 고찰 본문 초안 서술문"
+                },
+                "supported_contributions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "실증 근거에 의해 충분히 뒷받침된 핵심 기여점"
+                  },
+                  "description": "입증된 기여점 목록"
+                },
+                "recommended_followups": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "제약 사항 및 한계를 보완하기 위해 권장되는 후속 연구/검증 과제"
+                  },
+                  "description": "추천 후속 검증 과제 목록"
+                },
+                "introduction_draft": {
+                  "type": "string",
+                  "description": "학술 논문 1장 형태의 서론 및 연구 문제 정의 본문 초안"
+                },
+                "related_work_draft": {
+                  "type": "string",
+                  "description": "학술 논문 2장 형태의 관련 연구 및 배경 지식 본문 초안"
+                },
+                "system_design_draft": {
+                  "type": "string",
+                  "description": "학술 논문 3장 형태의 시스템 아키텍처 및 이론 모델 본문 초안"
+                },
+                "limitations_draft": {
+                  "type": "string",
+                  "description": "학술 논문 6장 형태의 연구의 한계점 및 식별된 기술적 제약 사항 본문 초안"
+                },
+                "conclusion_draft": {
+                  "type": "string",
+                  "description": "학술 논문 7장 형태의 결론 및 향후 연구 과제 본문 초안"
+                },
+                "limitations_list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "식별된 기술적 병목 및 제약 사항"
+                  },
+                  "description": "식별된 제약사항 목록"
+                }
+              },
+              "required": [
+                "support_level",
+                "coherence_score",
+                "abstract",
+                "introduction_draft",
+                "related_work_draft",
+                "system_design_draft",
+                "methodology_draft",
+                "validation_draft",
+                "limitations_draft",
+                "conclusion_draft",
+                "supported_contributions",
+                "limitations_list",
+                "recommended_followups"
+              ]
+            }
+          },
+          "mode": "standard",
+          "modelName": "",
+          "nodeMode": "extract"
+        },
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract_WeaklySupported",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "support_level": {
+                  "type": "string",
+                  "description": "입증 수준 판정 (Strongly Supported / Partially Supported / Weakly Supported)"
+                },
+                "coherence_score": {
+                  "type": "number",
+                  "description": "설계-실증 간 종합 정합성 점수 (0~100)"
+                },
+                "abstract": {
+                  "type": "string",
+                  "description": "연구 목적, 제안 방법론 및 실증 성과를 요약한 학술 논문 초록"
+                },
+                "methodology_draft": {
+                  "type": "string",
+                  "description": "학술 논문 4장 형태의 정형 연구 방법론 및 시스템 아키텍처 본문 초안 서술문"
+                },
+                "validation_draft": {
+                  "type": "string",
+                  "description": "학술 논문 5장 형태의 실증 검증 결과 분석 및 비교 고찰 본문 초안 서술문"
+                },
+                "supported_contributions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "실증 근거에 의해 충분히 뒷받침된 핵심 기여점"
+                  },
+                  "description": "입증된 기여점 목록"
+                },
+                "recommended_followups": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "제약 사항 및 한계를 보완하기 위해 권장되는 후속 연구/검증 과제"
+                  },
+                  "description": "추천 후속 검증 과제 목록"
+                },
+                "introduction_draft": {
+                  "type": "string",
+                  "description": "학술 논문 1장 형태의 서론 및 연구 문제 정의 본문 초안"
+                },
+                "related_work_draft": {
+                  "type": "string",
+                  "description": "학술 논문 2장 형태의 관련 연구 및 배경 지식 본문 초안"
+                },
+                "system_design_draft": {
+                  "type": "string",
+                  "description": "학술 논문 3장 형태의 시스템 아키텍처 및 이론 모델 본문 초안"
+                },
+                "limitations_draft": {
+                  "type": "string",
+                  "description": "학술 논문 6장 형태의 연구의 한계점 및 식별된 기술적 제약 사항 본문 초안"
+                },
+                "conclusion_draft": {
+                  "type": "string",
+                  "description": "학술 논문 7장 형태의 결론 및 향후 연구 과제 본문 초안"
+                },
+                "limitations_list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "식별된 기술적 병목 및 제약 사항"
+                  },
+                  "description": "식별된 제약사항 목록"
+                }
+              },
+              "required": [
+                "support_level",
+                "coherence_score",
+                "abstract",
+                "introduction_draft",
+                "related_work_draft",
+                "system_design_draft",
+                "methodology_draft",
+                "validation_draft",
+                "limitations_draft",
+                "conclusion_draft",
+                "supported_contributions",
+                "limitations_list",
+                "recommended_followups"
+              ]
+            }
+          },
+          "mode": "standard",
+          "modelName": "",
+          "nodeMode": "extract"
+        }
+      ],
+      "categorySchemaMapping": {
+        "Strongly Supported": "Extract_StronglySupported",
+        "Partially Supported": "Extract_PartiallySupported",
+        "Weakly Supported": "Extract_WeaklySupported"
+      },
+      "location": true
+    },
+    "pipelineEdges": [
+      {
+        "id": "e0",
+        "source": {
+          "nodeType": "parse"
+        },
+        "target": {
+          "nodeType": "classify",
+          "name": "Classify-1"
+        }
+      },
+      {
+        "id": "e1",
+        "source": {
+          "nodeType": "classify",
+          "name": "Classify-1"
+        },
+        "target": {
+          "nodeType": "extract",
+          "name": "Extract_StronglySupported"
+        },
+        "condition": {
+          "conditionName": "Strongly Supported"
+        }
+      },
+      {
+        "id": "e2",
+        "source": {
+          "nodeType": "classify",
+          "name": "Classify-1"
+        },
+        "target": {
+          "nodeType": "extract",
+          "name": "Extract_PartiallySupported"
+        },
+        "condition": {
+          "conditionName": "Partially Supported"
+        }
+      },
+      {
+        "id": "e3",
+        "source": {
+          "nodeType": "classify",
+          "name": "Classify-1"
+        },
+        "target": {
+          "nodeType": "extract",
+          "name": "Extract_WeaklySupported"
+        },
+        "condition": {
+          "conditionName": "Weakly Supported"
+        }
+      }
+    ]
+  }
+}

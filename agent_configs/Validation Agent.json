@@ -1,0 +1,96 @@
+{
+  "kind": "studio.agent-config-draft",
+  "exportedAt": "2026-09-28T10:00:00.000Z",
+  "exportedFrom": {
+    "agentId": "agt_ValidationAgentDraft",
+    "agentName": "Validation Agent",
+    "configId": "cfg_ValidationDraft01",
+    "configVer": 1
+  },
+  "agentConfig": {
+    "agent_name": "Validation Agent",
+    "pipelineType": "extract",
+    "documentParseConfiguration": {
+      "modelName": "document-parse",
+      "mode": "standard",
+      "ocrMode": "force",
+      "lang": "",
+      "chartRecognition": false,
+      "coordinates": true,
+      "mergeMultipageTables": false,
+      "outputFormats": [
+        "html",
+        "text"
+      ],
+      "base64Encoding": [
+        "figure"
+      ]
+    },
+    "informationExtractConfiguration": {
+      "modelName": "",
+      "schemas": [
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract_Validation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "validation_type": {
+                  "type": "string",
+                  "description": "검증 유형 (정량 벤치마크, 정성 사례연구, 형식 증명, PoC 재현 등)"
+                },
+                "empirical_evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "실증 근거, 실험 결과, 수치/시간 벤치마크 로그 데이터"
+                  },
+                  "description": "실증 데이터 및 근거 목록"
+                },
+                "verified_properties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "검증된 속성, 통과된 테스트 항목, 입증된 성능/기능"
+                  },
+                  "description": "검증된 속성 목록"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "한계점, 병목 지점, 트러블슈팅 내역 및 제약 사항"
+                  },
+                  "description": "제약 사항 및 한계점 목록"
+                }
+              },
+              "required": [
+                "validation_type",
+                "empirical_evidence",
+                "verified_properties",
+                "limitations"
+              ]
+            }
+          },
+          "mode": "standard",
+          "modelName": ""
+        }
+      ],
+      "categorySchemaMapping": {},
+      "location": true
+    },
+    "pipelineEdges": [
+      {
+        "id": "e0",
+        "source": {
+          "nodeType": "parse"
+        },
+        "target": {
+          "nodeType": "extract",
+          "name": "Extract_Validation"
+        }
+      }
+    ]
+  }
+}
