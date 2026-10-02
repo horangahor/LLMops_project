@@ -205,7 +205,7 @@ class AgentClient:
         ]
 
         payload = {
-            "model": "solar-mini",
+            "model": "solar-pro",
             "messages": messages,
             "temperature": 0.2
         }
