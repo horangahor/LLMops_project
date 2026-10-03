@@ -91,6 +91,7 @@ EVALUATION_PDF = OUTPUT_DIR / "Evaluation_Input.pdf"
 PAPER_DRAFT_RESULT = RESULT_DIR / "matching_result.json"
 PAPER_DRAFT_MD = RESULT_DIR / "Paper_Draft_Sections.md"
 PAPER_DRAFT_PDF = RESULT_DIR / "Paper_Draft.pdf"
+DEFAULT_DB_PATH = RESULT_DIR / "evidence_store.db"
 
 # Aliases for backward compatibility
 RESUME_JSON = PROPOSAL_JSON

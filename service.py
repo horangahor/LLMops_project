@@ -223,10 +223,36 @@ def run_traceable_paper_draft_pipeline(
         "audit_report": audit,
         "calculations": [c.model_dump() for c in drafting_result["calculations"]],
         "section_evaluations": {
-            "materials_methods": {k: v for k, v in eval_mm.items() if k != "fulfilled_items" and k != "missing_items"},
-            "results_discussion": {k: v for k, v in eval_rd.items() if k != "fulfilled_items" and k != "missing_items"},
-            "limitations": {k: v for k, v in eval_lim.items() if k != "fulfilled_items" and k != "missing_items"}
+            "materials_methods": {
+                "section_id": eval_mm["section_id"],
+                "status": eval_mm["status"],
+                "total_requirements": eval_mm["total_requirements"],
+                "fulfilled_count": eval_mm["fulfilled_count"],
+                "missing_count": eval_mm["missing_count"],
+                "fulfilled_items": [r.model_dump() for r in eval_mm.get("fulfilled_items", [])],
+                "missing_items": [r.model_dump() for r in eval_mm.get("missing_items", [])],
+            },
+            "results_discussion": {
+                "section_id": eval_rd["section_id"],
+                "status": eval_rd["status"],
+                "total_requirements": eval_rd["total_requirements"],
+                "fulfilled_count": eval_rd["fulfilled_count"],
+                "missing_count": eval_rd["missing_count"],
+                "fulfilled_items": [r.model_dump() for r in eval_rd.get("fulfilled_items", [])],
+                "missing_items": [r.model_dump() for r in eval_rd.get("missing_items", [])],
+            },
+            "limitations": {
+                "section_id": eval_lim["section_id"],
+                "status": eval_lim["status"],
+                "total_requirements": eval_lim["total_requirements"],
+                "fulfilled_count": eval_lim["fulfilled_count"],
+                "missing_count": eval_lim["missing_count"],
+                "fulfilled_items": [r.model_dump() for r in eval_lim.get("fulfilled_items", [])],
+                "missing_items": [r.model_dump() for r in eval_lim.get("missing_items", [])],
+                "gap_request_form": eval_lim.get("gap_request_form")
+            }
         },
+        "all_claims": [c.model_dump() for c in drafting_result["all_claims"]],
         "sources": [doc_a.model_dump(), doc_b.model_dump()]
     }
 
