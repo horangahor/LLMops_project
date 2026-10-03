@@ -20,9 +20,16 @@ from config import (
     EVALUATION_PDF,
     PAPER_DRAFT_RESULT,
     PAPER_DRAFT_MD,
-    PAPER_DRAFT_PDF,
-    DEFAULT_DB_PATH
+    PAPER_DRAFT_PDF
 )
+
+try:
+    from config import DEFAULT_DB_PATH
+except ImportError:
+    try:
+        from evidence_store import DEFAULT_DB_PATH
+    except ImportError:
+        DEFAULT_DB_PATH = Path(__file__).resolve().parent / "result" / "paperdraft_evidence.db"
 from service import run_traceable_paper_draft_pipeline
 from evidence_store import EvidenceStore
 from calculation_engine import DeterministicCalculationEngine
