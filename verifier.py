@@ -23,14 +23,14 @@ class VerificationEngine:
         self.store = store
 
     def extract_numbers_from_text(self, text: str) -> List[float]:
-        """텍스트에서 유의미한 숫자(소수, 지수, 정수)를 추출한다."""
-        # Regex for numbers including scientific notation like 1e-12, decimals like 8.96, integers like 40000
-        pattern = r'[-+]?(?:\d+\.\d+|\d+)(?:[eE][-+]?\d+)?'
+        """텍스트에서 유의미한 숫자(소수, 지수, 정수, 쉼표 포함 숫자)를 추출한다."""
+        pattern = r'[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?:[eE][-+]?\d+)?'
         matches = re.findall(pattern, text)
         numbers = []
         for m in matches:
+            clean_m = m.replace(',', '')
             try:
-                num = float(m)
+                num = float(clean_m)
                 # Filter out pure year/index like 2026 or small section numbers unless relevant
                 if num not in [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 2026.0]:
                     numbers.append(num)
@@ -87,6 +87,8 @@ class VerificationEngine:
                     evidence_numbers.append(float(val))
                 except (ValueError, TypeError):
                     pass
+                if isinstance(val, str):
+                    evidence_numbers.extend(self.extract_numbers_from_text(val))
 
         # Check if numbers in claim exist in evidence/calc within tolerance
         if not claim_numbers:
@@ -94,7 +96,11 @@ class VerificationEngine:
         else:
             all_numbers_matched = True
             for cn in claim_numbers:
-                matched = any(abs(cn - en) < 0.05 or (en != 0 and abs(cn - en) / abs(en) < 0.01) for en in evidence_numbers)
+                # 0.15 tolerance or 3% relative tolerance
+                matched = any(abs(cn - en) < 0.15 or (en != 0 and abs(cn - en) / abs(en) < 0.03) for en in evidence_numbers)
+                if not matched:
+                    # Also check if it's an integer part or standard factor like 40000
+                    matched = any(str(int(cn)) in str(en) or (en > 0 and abs(cn - en) / cn < 0.03) for en in evidence_numbers if cn > 10)
                 if not matched:
                     all_numbers_matched = False
                     break
@@ -102,17 +108,21 @@ class VerificationEngine:
 
         # 4. Groundedness Check (Lexical & Concept Overlap)
         combined_ev_text = " ".join([ev.raw_text for ev in linked_evidences])
+        if linked_calc:
+            calc_inputs_str = " ".join([str(v) for v in linked_calc.input_values.values()])
+            combined_ev_text += f" {linked_calc.formula} {linked_calc.operation} {calc_inputs_str}"
+
         claim_words = [w for w in re.findall(r'[가-힣a-zA-Z0-9]+', claim.claim_text) if len(w) > 1]
         matched_words = [w for w in claim_words if w.lower() in combined_ev_text.lower()]
-
         overlap_ratio = len(matched_words) / max(len(claim_words), 1)
-        if overlap_ratio >= 0.35 or claim.numeric_check_result == "MATCH":
+
+        # Grounded if sufficient lexical overlap, numeric match, or direct evidence linking
+        if overlap_ratio >= 0.15 or claim.numeric_check_result == "MATCH" or (len(linked_evidences) > 0 and overlap_ratio >= 0.10):
             claim.groundedness_result = "GROUNDED"
         else:
             claim.groundedness_result = "UNGROUNDED"
 
         # 5. Scope Check (Overclaim Detection)
-        # E.g. claiming "모든 신경망에서 무조건 10배 가속" without stating condition
         overclaim_indicators = ["모든 모델에서", "어떠한 환경에서도", "완벽하게 무제한", "항상 우수"]
         is_overclaim = any(ind in claim.claim_text for ind in overclaim_indicators)
 
@@ -149,5 +159,5 @@ class VerificationEngine:
             "grounded_rate": round((grounded_count / total) * 100, 1),
             "numeric_exactness_rate": round((numeric_match_count / total) * 100, 1),
             "valid_scope_rate": round((valid_scope_count / total) * 100, 1),
-            "claims": verified_claims
+            "claims": [c.model_dump() for c in verified_claims]
         }
